@@ -50,7 +50,7 @@ order by c.batch desc
 		echo '<p class="muted" style="display: inline;">'.$row['downloads'].' downloads</p>';
 		echo '</td>';
 		echo '<td>';
-		echo '<p><a class="btn btn-large btn-success" href="print_page.php?album='.$row['id'].'" target="_blank"><i class="icon-print"></i> Print this Batch</a></p>';
+		echo '<p><a class="btn btn-large btn-success" href="print_page.php?album='.$row['id'].'&batch='.$row['batch'].'" target="_blank"><i class="icon-print"></i> Print this Batch</a></p>';
 		echo '</td>';
 		echo '</tr>';
 	}

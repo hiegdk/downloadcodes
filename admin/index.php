@@ -2,7 +2,7 @@
 require_once('../config.php');
 require_once('simpleimage.php');
 require_once('top.php');
-
+error_reporting(E_ALL);
 
 
 if(isset($_POST)){

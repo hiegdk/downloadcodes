@@ -34,6 +34,7 @@ img{
 require_once('../config.php');
 if(isset($_GET)){
 	$album_id = $mysqli->real_escape_string($_GET['album']);
+	$batch_id = $mysqli->real_escape_string($_GET['batch']);
 
 	if($c = $mysqli->query("select * from config where id = 1")){
 		if(!$config = $c->fetch_assoc()){
@@ -43,7 +44,7 @@ if(isset($_GET)){
 		printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);	
 	}
 
-	if($result = $mysqli->query("select a.artist as artist, a.album as album, c.code as code from albums a left outer join codes c on c.album = a.id")){
+	if($result = $mysqli->query("select a.artist as artist, a.album as album, c.code as code from albums a left outer join codes c on c.album = a.id where c.album = ".$album_id." and c.batch = ".$batch_id)){
 		$i=0;
 		while(null !== ($row = $result->fetch_assoc())){	
 			echo '<div class="card">';
