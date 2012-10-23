@@ -143,7 +143,7 @@ if(isset($_POST)){
   			<input type="submit" class="btn btn-large btn-success" name="submit" value="Add Codes!" />
 		</form>
 	</div>
-	<div class="span1"> - OR - </div>
+	<div class="span1" style="text-align:center;"><br /><br /> - OR - </div>
 	<div class="span4 well">		
 		<form method="post" enctype='multipart/form-data'>
 			<legend>Create a new album</legend>
