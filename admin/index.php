@@ -22,13 +22,24 @@ if(isset($_POST)){
 
 
 			$insert_sql = "insert into codes (batch,code,album,num_downloads) values ";
+			$string = 'Code,Album,Batch'.PHP_EOL;
 			for($i=0;$i<$num_codes;$i++){
 				//generate code
-				$insert_sql .= "('".$batch."','".create_code()."','".$album."','".$num_dls."'),";
+				$new_code = create_code();
+				$insert_sql .= "('".$batch."','".$new_code."','".$album."','".$num_dls."'),";
+				$string .= $new_code.','.$album.','.$batch.PHP_EOL;
 			}
 			$insert_sql = substr($insert_sql,0,-1);
 			//print '<pre>'.$insert_sql.'</pre>';
 			if($mysqli->query($insert_sql)){
+				//create backup file
+				if($result = $mysqli->query("select * from albums where id = ".$album)){
+					$row = $result->fetch_assoc();
+					$file = './backups/'.$row['artist'].' - '.$row['album'].' - Batch '.$batch.'.txt';
+					file_put_contents($file, $string);
+				}	
+
+
 				printf("<div class=\"alert alert-success\">%s Codes Added!</div>",$num_codes);
 			}else{
 				printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
@@ -73,12 +84,23 @@ if(isset($_POST)){
 						$insert_sql = "insert into codes (code,album,num_downloads) values ";
 						for($i=0;$i<$num_codes;$i++){
 							//generate code
-							$insert_sql .= "('".create_code()."','".$mysqli->insert_id."','".$num_dls."'),";
+							$insert_id = $mysqli->insert_id;
+							$insert_sql .= "('".create_code()."','".$insert_id."','".$num_dls."'),";
 						}
 						$insert_sql = substr($insert_sql,0,-1);
 						//print '<pre>'.$insert_sql.'</pre>';
 						if(!$mysqli->query($insert_sql)){
 							printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
+						}else{
+							//create backup file
+							if($result = $mysqli->query("select * from codes where album = ".$insert_id)){
+								$string = 'Code,Album,Batch'.PHP_EOL;
+								while(null !== ($row = $result->fetch_assoc())){
+									$string .= $row['code'].','.$row['album'].','.$row['batch'].PHP_EOL;
+								}
+								$file = './backups/'.$artist_name.' - '.$album_name.' - Batch 1.txt';
+								file_put_contents($file, $string);
+							}	
 						}
 					}else{
 						printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);

@@ -16,15 +16,18 @@ $sql_create_albums =
 	"album varchar (64),".
 	"thumbnail varchar(64),".
 	"file varchar(128),".
+	"index idx_album (album asc),".
 	"primary key(id));";
 
 $sql_create_codes = 
 	"CREATE TABlE codes(".
 	"id int unsigned not null auto_increment,".
 	"batch int default 1,".
-	"code varchar(64),".
+	"code varchar(10),".
 	"album int,".
 	"num_downloads int,".
+	"index idx_album (album asc),".
+	"index idx_code (code(10) asc),".
 	"primary key(id));";
 
 $sql_create_config = 
@@ -43,6 +46,8 @@ $sql_create_logs =
 	"code int,".
 	"date timestamp default CURRENT_TIMESTAMP,".
 	"user_agent varchar(1024),".
+	"index idx_album (album asc),".
+	"index idx_code (code asc),".
 	"primary key(id));";
 
 $sql_insert_config = "insert into config (id,name) values (1,'Download')";
