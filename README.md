@@ -3,6 +3,14 @@ Download Codes
 
 Manage MP3 Download Codes
 
+Screenshots
+-------------
+![Main Admin](https://raw.github.com/hiegdk/downloadcodes/master/screenshots/main_admin_screen.png "Main Admin")
+![Configuration](https://raw.github.com/hiegdk/downloadcodes/master/screenshots/config_screen.png "Configuration")
+![Print Batches](https://raw.github.com/hiegdk/downloadcodes/master/screenshots/print_batch_screen.png "Print Batches")
+![Home](https://raw.github.com/hiegdk/downloadcodes/master/screenshots/home_screen.png "Home")
+
+
 TODO
 -------------
 * add modify and del functionality for albums
