@@ -32,6 +32,15 @@
             <span class="icon-bar"></span>
           </a>
           <a class="brand" href="#">Download Codes</a>
+           <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="index.php">Home</a></li>
+              <li><a href="reset.php">Reset a Code</a></li>
+              <li><a href="config.php">Config</a></li>
+              <li><a href="install.php">Install</a></li>
+              <li><a href="https://github.com/hiegdk/downloadcodes" target="_blank">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
