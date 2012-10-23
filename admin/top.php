@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Download Codes</a>
+          <a class="brand" href="index.php">Download Codes</a>
            <div class="nav-collapse collapse">
             <ul class="nav">
               <li><a href="index.php">Home</a></li>

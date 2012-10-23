@@ -28,3 +28,4 @@ Installation
 * password protect the /admin/ folder (use a .htaccess / .htpasswd file)
 * browse to /admin/install.php to setup the DB
 * once the DB ins setup remove or rename install.php so you don't accidentally destroy your DB later
+* click on Config to customize your settings
