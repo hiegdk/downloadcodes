@@ -24,11 +24,6 @@ if(isset($_POST) && isset($_POST['code'])){
 	}else{
 		printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
 	}
-
-	if($row['downloaded'] < $row['num_downloads']){
-		header("Location: file.php?code=".$code);
-	}
-
 }
 ?>
 
@@ -37,6 +32,11 @@ if(isset($_POST) && isset($_POST['code'])){
 <?php
 if($row['downloaded'] < $row['num_downloads']){
 	echo '<p class="muted">Your download will start momentarily. If it does not please <a href="file.php?code='.$code.'">click here to download you file</a></p>';
+	
+	//javascript redirect
+	echo '<script type="text/javascript">function dl(){window.location = "file.php?code='.$code.'";}setTimeout(\'dl()\', 2000)</script>';
+	
+
 	$remaining = $row['num_downloads'] - $row['downloaded'];
 	if($remaining == 1){
 		echo '<p class="muted">You can download this file 1 more time.</p>';

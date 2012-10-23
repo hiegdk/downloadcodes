@@ -16,7 +16,6 @@ TODO
 -------------
 * add modify and del functionality for albums
 * add reset code feature
-* make the download start after a couple of seconds - JS redirect
 
 Installation
 ------------
