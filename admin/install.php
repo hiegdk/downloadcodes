@@ -105,7 +105,11 @@ if($_POST && $_POST['step'] == "createdb"){
 		//do the tables already exist?
 		if ($result = $mysqli->query("show tables")){
 			$continue = true;
-			$row = $result->fetch_all(MYSQLI_NUM);
+
+			//fix for systems without mysqlnd
+			while(null !== $r = $result->fetch_assoc()){
+				$row[] = $r;
+			}
 
 			if(isset($row[0]) && !in_array("codes", $row[1])){
 				$continue = true;
