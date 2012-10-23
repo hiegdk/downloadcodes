@@ -1,5 +1,7 @@
 <?php
 require_once('config.php');
+$result = $mysqli->query("select * from config where id = 1");
+$config = $result->fetch_assoc();
 require_once('top.php');
 
 if(isset($_POST) && isset($_POST['code'])){

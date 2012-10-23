@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Redeem Download Code</title>
+    <title><?php echo $config['name']; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="index.php">Redeem Download Code</a>
+          <a class="brand" href="index.php"><?php echo $config['name']; ?></a>
         </div>
       </div>
     </div>

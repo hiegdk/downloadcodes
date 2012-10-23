@@ -9,6 +9,7 @@ $main_logo="";
 $url="";
 $code_logo="";
 $logosql = "";
+$mainsql = "";
 
 
 if(isset($_POST) && isset($_POST['name'])){
