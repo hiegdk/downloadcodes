@@ -1,20 +1,36 @@
 <?php
 require_once('../config.php');
+require_once('simpleimage.php');
 require_once('top.php');
 
 
 $name="";
+$main_logo="";
+$url="";
 $code_logo="";
 $logosql = "";
 
 
-if(isset($_POST)){
+if(isset($_POST) && isset($_POST['name'])){
 	$name = $mysqli->real_escape_string($_POST['name']);
+	$url = $mysqli->real_escape_string($_POST['url']);
 
-	if (isset($_FILES['code_logo']['tmp_name']) && is_uploaded_file($_FILES['code_logo']['tmp_name'])) {
+	if (isset($_FILES['code_logo']['tmp_name']) && is_uploaded_file($_FILES['code_logo']['tmp_name']) && is_uploaded_file($_FILES['main_logo']['tmp_name'])) {
 		$fn=time().'_'.$_FILES['code_logo']['name'];
 		$filename = './assets/'.$fn;
+		if(move_uploaded_file($_FILES["main_logo"]["tmp_name"], '../img/'.$_FILES["main_logo"]["name"])){
+			$mainsql = ", main_logo='".$mysqli->real_escape_string($_FILES["main_logo"]["name"])."' ";
+		}else{
+			echo '<div class="alert alert-error">Error: Could not upload file ../img/'.$_FILES["main_logo"]["name"].' ('.$_FILES['main_logo']['tmp_name'].')</div>';		
+		}
 		if(move_uploaded_file($_FILES["code_logo"]["tmp_name"], $filename)){
+			
+			$image1 = new SimpleImage();
+		    $image1->load($filename);
+		    $image1->resizeToHeight(100);		
+		    $image1->save($filename);
+
+
 			$logo = $mysqli->real_escape_string($fn);
 			$logosql = ", code_logo='$logo' ";
 		}else{
@@ -23,7 +39,7 @@ if(isset($_POST)){
 		
 	}
 
-	if($mysqli->query("update config set name = '$name' $logosql where id = 1")){
+	if($mysqli->query("update config set name = '$name', url='$url' $logosql $mainsql where id = 1")){
 		printf("<div class=\"alert alert-success\">Config Saved!</div>");
 	}else{
 		printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
@@ -31,18 +47,15 @@ if(isset($_POST)){
 
 }
 
-$result = $mysqli->query("select * from config where id = 1");
-if($row = $result->fetch_assoc()){
-	//print_r($row);
-	$name = $row['name'];
-	$code_logo = $row['code_logo'];
-}
+if(isset($_GET) && isset($_GET['del_code_logo'])){
 
+	$result = $mysqli->query("select code_logo from config where id = 1");
+	if($row = $result->fetch_assoc()){
+		$file = $row['code_logo'];
+	}
 
-
-if($_GET && $_GET['del_code_logo']){
 	//delete te file
-	unlink('assets/'.$code_logo);
+	unlink('assets/'.$file);
 	$code_logo = '';
 	//clear the db
 	if($mysqli->query("update config set code_logo = '' where id = 1")){
@@ -50,6 +63,35 @@ if($_GET && $_GET['del_code_logo']){
 	}else{
 		printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
 	}
+}
+
+
+if(isset($_GET) && isset($_GET['del_main_logo'])){
+
+	$result = $mysqli->query("select main_logo from config where id = 1");
+	if($row = $result->fetch_assoc()){
+		$file = $row['main_logo'];
+	}
+
+	//delete te file
+	unlink('../img/'.$file);
+	$code_logo = '';
+	//clear the db
+	if($mysqli->query("update config set main_logo = '' where id = 1")){
+		printf("<div class=\"alert alert-success\">Main Logo removed!</div>");
+	}else{
+		printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
+	}
+}
+
+
+$result = $mysqli->query("select * from config where id = 1");
+if($row = $result->fetch_assoc()){
+	//print_r($row);
+	$name = $row['name'];
+	$main_logo = $row['main_logo'];
+	$code_logo = $row['code_logo'];
+	$url = $row['url'];
 }
 
 
@@ -62,6 +104,24 @@ if($_GET && $_GET['del_code_logo']){
 	    <label class="control-label" for="inputName">Name</label>
 	    <div class="controls">
 	      <input type="text" id="inputName" placeholder="Name" name="name" value="<?php echo $name; ?>">
+	    </div>
+	  </div>
+	  <div class="control-group">
+	    <label class="control-label" for="inputURL">URL</label>
+	    <div class="controls">
+	      <input type="text" id="inputURL" placeholder="URL" name="url" value="<?php echo $url; ?>">
+	    </div>
+	  </div>
+	  <div class="control-group">
+	    <label class="control-label" for="inputMainLogo">Main Logo</label>
+	    <div class="controls">
+	    	<?php
+	    	if(!$code_logo){
+	    		print '<input type="file" id="inputMainLogo" placeholder="Main Logo" name="main_logo">';
+	    	}else{
+	    		print '<img src="../img/'.$main_logo.'" class="img-polaroid" /> <a class="btn btn-mini btn-danger" href="config.php?del_main_logo=true"><i class="icon-remove"></i> Remove Main Logo</a>';
+	    	}
+	    	?>
 	    </div>
 	  </div>
 	  <div class="control-group">

@@ -9,8 +9,35 @@ if(isset($_POST)){
 
 	//Create new codes for existing album
 	if(isset($_POST['album'])){
-		$go=true;
+		$album = $mysqli->real_escape_string($_POST['album']);
+		$num_codes = $mysqli->real_escape_string($_POST['num_codes']);
+		$num_dls = $mysqli->real_escape_string($_POST['num_dls']);
 
+		if($num_codes > 0 && $num_dls > 0){
+			$result = $mysqli->query("select max(batch) + 1 as batch from codes where album = '".$album."'");
+			if($row = $result->fetch_assoc()){
+				//print_r($row);
+				$batch = $row['batch'];
+			}
+
+
+			$insert_sql = "insert into codes (batch,code,album,num_downloads) values ";
+			for($i=0;$i<$num_codes;$i++){
+				//generate code
+				$insert_sql .= "('".$batch."','".create_code()."','".$album."','".$num_dls."'),";
+			}
+			$insert_sql = substr($insert_sql,0,-1);
+			//print '<pre>'.$insert_sql.'</pre>';
+			if($mysqli->query($insert_sql)){
+				printf("<div class=\"alert alert-success\">%s Codes Added!</div>",$num_codes);
+			}else{
+				printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
+			}	
+		}else{
+			printf("<div class=\"alert alert-error\"><strong># Codes</strong> &amp; <strong># Dls per Code</strong> must both be greater than 0.</div>");	
+		}
+
+		
 	//Create new album
 	}elseif(isset($_POST['name'])){
 		//check for uploaded files
@@ -91,6 +118,7 @@ if(isset($_POST)){
 
 			<input type="text" class="input-medium" placeholder="# Codes" name="num_codes">
   			<input type="text" class="input-medium" placeholder="# DLs per Code" name="num_dls">
+  			<input type="submit" class="btn btn-large btn-success" name="submit" value="Add Codes!" />
 		</form>
 	</div>
 	<div class="span1"> - OR - </div>
@@ -126,7 +154,23 @@ if(isset($_POST)){
 <?php
 echo '<table class="table table-hover">';
 echo '<tr><th>Artwork</th><th>Artist/Album/Info</th><th>File Name</th><th>Actions</th></td>';
-if($result = $mysqli->query("select a.id as id, a.artist as artist, a.album as album, a.thumbnail as thumbnail, a.file as file, count(c.id) as count, count(l.id) as downloads from albums a left outer join codes c on c.album = a.id left outer join logs l on l.album = a.id group by 1")){
+if($result = $mysqli->query("
+select 
+    a.id as id,
+    c.batch as batch, 
+    a.artist as artist, 
+    a.album as album, 
+    a.file,
+    a.thumbnail as thumbnail, 
+    count(c.id) as count,
+    count(l.id) as downloads
+from
+    albums a left outer join codes c on c.album = a.id 
+    left outer join (select * from logs group by code) l on l.code = c.id
+group by 
+    a.id
+order by c.batch desc
+")){
 	while(null !== ($row = $result->fetch_assoc())){		
 		echo '<tr>';
 		echo '<td><img class="img-polaroid" src="../img/t_'.$row['thumbnail'].'" width="80" alt=""/></td>';
@@ -135,12 +179,13 @@ if($result = $mysqli->query("select a.id as id, a.artist as artist, a.album as a
 		echo $row['count'].' unique codes';
 		echo '</td>';
 		echo '<td>';
-		echo $row['file'].'<br />';
+		echo '<i class="icon-share"></i> '.$row['file'].'<br />';
 		echo 'Downloaded '.$row['downloads'].' times';
 		echo '</td>';
 		echo '<td>';
-		echo '<a class="btn btn-mini btn-warning" href="?edit='.$row['id'].'"><i class="icon-edit"></i> Modify</a><br /><br />';
-		echo '<a class="btn btn-mini btn-danger" href="?del='.$row['id'].'"><i class="icon-remove"></i> Remove</a>';
+		echo '<p><a class="btn btn-mini btn-success" href="print.php?album='.$row['id'].'"><i class="icon-print"></i> Print Codes</a></p>';
+		echo '<p><a class="btn btn-mini btn-warning" href="index.php?edit='.$row['id'].'"><i class="icon-edit"></i> Modify</a></p>';
+		echo '<p><a class="btn btn-mini btn-danger" href="index.php?del='.$row['id'].'"><i class="icon-remove"></i> Remove</a></p>';
 		echo '</td>';
 		echo '</tr>';
 	}

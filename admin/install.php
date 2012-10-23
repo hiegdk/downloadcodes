@@ -30,8 +30,10 @@ $sql_create_codes =
 $sql_create_config = 
 	"CREATE TABlE config(".
 	"id int unsigned not null auto_increment,".
+	"main_logo varchar(256),".
 	"code_logo varchar(256),".
 	"name varchar(64),".
+	"url varchar(64),".
 	"primary key(id));";
 
 $sql_create_logs = 
