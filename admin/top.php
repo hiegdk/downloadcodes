@@ -37,7 +37,6 @@
               <li><a href="index.php">Home</a></li>
               <li><a href="reset.php">Reset a Code</a></li>
               <li><a href="config.php">Config</a></li>
-              <li><a href="install.php">Install</a></li>
               <li><a href="https://github.com/hiegdk/downloadcodes" target="_blank">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
