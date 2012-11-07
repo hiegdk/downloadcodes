@@ -117,11 +117,7 @@ if(isset($_POST)){
 		}
 	}
 }
-
-
-
 ?>
-
 <h1>Generate New Codes</h1>
 <div class="row">
 	<div class="span4 well">
@@ -206,8 +202,8 @@ order by c.batch desc
 		echo '</td>';
 		echo '<td>';
 		echo '<p><a class="btn btn-mini btn-success" href="print.php?album='.$row['id'].'"><i class="icon-print"></i> Print Codes</a></p>';
-		echo '<p><a class="btn btn-mini btn-warning" href="index.php?edit='.$row['id'].'"><i class="icon-edit"></i> Modify</a></p>';
-		echo '<p><a class="btn btn-mini btn-danger" href="index.php?del='.$row['id'].'"><i class="icon-remove"></i> Remove</a></p>';
+		echo '<p><a class="btn btn-mini btn-warning" href="edit.php?album='.$row['id'].'"><i class="icon-edit"></i> Modify</a></p>';
+		echo '<p><a class="btn btn-mini btn-danger confirm" href="del.php?id='.$row['id'].'"><i class="icon-remove"></i> Remove</a></p>';
 		echo '</td>';
 		echo '</tr>';
 	}
@@ -217,6 +213,26 @@ mysqli_free_result($result);
 
 echo '</table>';
 ?>
+
+<script>
+$(function() {
+    $("a.confirm").click(function(e) {
+        e.preventDefault();
+        bootbox.dialog("You are about to delete an album. This is not reversable.<br /><br /><strong>Are you sure you want to continue?</strong>", [{
+            "label" : "Yeah, go for it!",
+            "class" : "btn-danger",
+            "icon"  : "icon-warning-sign icon-white",
+            "callback": function() {
+                window.location = e.currentTarget.href;
+            }
+        }, {
+            "label" : "OOPS, No I dont!",
+            "class" : "btn"
+        }]);
+    });
+});
+</script>
+
 
 <?php
 require_once('bottom.php');

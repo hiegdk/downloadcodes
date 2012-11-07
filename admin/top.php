@@ -9,10 +9,14 @@
 
     <!-- Le styles -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type='text/javascript' src="../js/bootstrap.js"></script>
+    <script type='text/javascript' src="../js/bootbox.min.js"></script>
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      .hide {display: none;}​
     </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -35,7 +39,6 @@
            <div class="nav-collapse collapse">
             <ul class="nav">
               <li><a href="index.php">Home</a></li>
-              <li><a href="reset.php">Reset a Code</a></li>
               <li><a href="config.php">Config</a></li>
               <li><a href="https://github.com/hiegdk/downloadcodes" target="_blank">About</a></li>
             </ul>
