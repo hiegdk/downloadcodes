@@ -8,7 +8,7 @@ if(isset($_GET)){
 
 		if($result = $mysqli->query("select * from albums where id = ".$id)){
 			if($album = $result->fetch_assoc()){
-				if(unlink('../img/'.$album['thumbnail'])){
+				if(unlink('../img/'.$album['thumbnail']) && unlink('../img/t_'.$album['thumbnail'])){
 					echo '<div class="alert alert-success">Thumbnail Deleted!</div>';
 				}else{
 					echo '<div class="alert alert-error">Could not delete Thumbnail: '.'../img/'.$album['thumbnail'].'</div>';
