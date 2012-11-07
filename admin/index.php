@@ -64,6 +64,7 @@ if(isset($_POST)){
 			    $image1->resizeToWidth(150);		
 			    $image1->save('../img/'.$tfn);
 
+			    //create smaller thumbnail
 			    $image2 = new SimpleImage();
 			    $image2->load('../img/'.$tfn);
 			    $image2->resizeToWidth(80);		
@@ -115,6 +116,53 @@ if(isset($_POST)){
 		}else{
 			echo '<div class="alert alert-error">Thumbnail and/or ZIP/RAR File not uploaded.</div>';		
 		}
+	}elseif(isset($_POST['edit_id'])){
+
+		$eid = $mysqli->real_escape_string($_POST['edit_id']);
+
+		if($result = $mysqli->query("select * from albums where id = ".$eid)){
+			if($album = $result->fetch_assoc()){
+				//check for new thumbnail
+				if (isset($_FILES['thumb']['tmp_name']) && is_uploaded_file($_FILES['thumb']['tmp_name'])){
+					if(move_uploaded_file($_FILES["thumb"]["tmp_name"], '../img/'.$album['thumbnail'])){
+
+						//resize
+						$image1 = new SimpleImage();
+					    $image1->load('../img/'.$album['thumbnail']);
+					    $image1->resizeToWidth(150);		
+					    $image1->save('../img/'.$album['thumbnail']);
+
+					    //create smaller thumbnail
+					    $image2 = new SimpleImage();
+					    $image2->load('../img/'.$album['thumbnail']);
+					    $image2->resizeToWidth(80);		
+					    $image2->save('../img/t_'.$album['thumbnail']);
+
+						printf("<div class=\"alert alert-success\">Thumbnail updated! %s</div>",'../img/'.$album['thumbnail']);	
+					}else{
+						echo '<div class="alert alert-error">Thumbnail could not be uploaded to ../img/'.$zfn.'</div>';
+					}	
+				}else{
+					echo '<div class="alert alert-warning">No Thumbnail provided. Ignoring.</div>';
+				}	
+
+				//check for new zip file
+				if (isset($_FILES['zip']['tmp_name']) && is_uploaded_file($_FILES['zip']['tmp_name'])){
+					if(move_uploaded_file($_FILES["zip"]["tmp_name"], $FILE_LOCATION.$album['file'])){
+						printf("<div class=\"alert alert-success\">Thumbnail updated! %s</div>",$FILE_LOCATION.$album['file']);	
+					}else{
+						echo '<div class="alert alert-error">ZIP/RAR could not be uploaded to '.$FILE_LOCATION.$album['file'].'</div>';
+					}		
+				}else{
+					echo '<div class="alert alert-warning">No ZIP/RAR file provided. Ignoring.</div>';
+				}				
+			}else{
+				printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
+			}
+		}else{
+			printf("<div class=\"alert alert-error\">Error: %s</div>", $mysqli->error);
+		}
+		
 	}
 }
 ?>
@@ -202,7 +250,7 @@ order by c.batch desc
 		echo '</td>';
 		echo '<td>';
 		echo '<p><a class="btn btn-mini btn-success" href="print.php?album='.$row['id'].'"><i class="icon-print"></i> Print Codes</a></p>';
-		echo '<p><a class="btn btn-mini btn-warning" href="edit.php?album='.$row['id'].'"><i class="icon-edit"></i> Modify</a></p>';
+		echo '<p><a class="btn btn-mini btn-warning modify" href="#myModal" data-toggle="modal" data-id="'.$row['id'].'"><i class="icon-edit"></i> Modify</a></p>';
 		echo '<p><a class="btn btn-mini btn-danger confirm" href="del.php?id='.$row['id'].'"><i class="icon-remove"></i> Remove</a></p>';
 		echo '</td>';
 		echo '</tr>';
@@ -213,6 +261,37 @@ mysqli_free_result($result);
 
 echo '</table>';
 ?>
+
+
+
+<div class="modal hide fade" id="myModal">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Modify Album</h3>
+  </div>
+
+  <div class="modal-body">
+    <form id="modal-form" enctype="multipart/form-data" method="post">
+    	<input name="edit_id" id="edit_id" type="hidden" value="" />
+    	<div class="control-group well">
+			    <label class="control-label" for="thumb"><i class="icon-picture"></i> Album Cover</label>
+				<div class="controls">
+					<input type="file" class="input-medium" id="thumb" placeholder="Album Thumb" name="thumb">	
+				</div>
+		  	</div>
+		  	<div class="control-group well">
+			    <label class="control-label" for="zip"><i class="icon-music"></i> ZIP/RAR File</label>
+				<div class="controls">
+					<input type="file" class="input-medium" placeholder="ZIP/RAR File" name="zip">	
+				</div>
+		  	</div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+  	<a id="modal-form-submit" class='btn btn-primary' href="#">Modify Album</a>
+  </div>
+</div>
 
 <script>
 $(function() {
@@ -230,6 +309,32 @@ $(function() {
             "class" : "btn"
         }]);
     });
+
+
+	// finally, wire up the actual modal functionality and show the dialog
+	$("#myModal").modal({
+		"backdrop" : "static",
+		"keyboard" : false,
+		"show" : false // this parameter ensures the modal is shown immediately
+	});
+
+	$('#modal-form-submit').on('click', function(e){
+		// We don't want this to act as a link so cancel the link action
+		e.preventDefault();
+
+		// Find form and submit it
+		$('#modal-form').submit();
+	});
+
+	 $("a.modify").click(function(e) {
+	 	var modal = $("#myModal");
+	 	modal.show();
+	 	console.log("edit_id: " + $("#edit_id").val());
+	 	$("#edit_id").val($(this).attr("data-id"));
+	 	console.log("edit_id: " + $("#edit_id").val());
+	 	
+	 });
+
 });
 </script>
 
