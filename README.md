@@ -1,7 +1,7 @@
 Download Codes
 =============
 
-Manage MP3 Download Codes
+Manage MP3 Download Codes for your Vinyl Releases
 
 Screenshots
 -------------
